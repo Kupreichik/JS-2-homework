@@ -7,18 +7,45 @@ const goods = [
   { title: 'Shoes', price: 250 },
 ];
 
-const renderGoodsItem = ({title = 'Странный товар...', price = 'Нет на складе'} = {}) => {
-  return `
+class GoodsItem {
+  constructor({title = 'Странный товар...', price = 'Нет на складе'} = {}) {
+    this.title = title;
+    this.price = price;
+  }
+
+  render() {
+    return `
     <div class="goods-item">
-      <h3 class="goods-title">${title}</h3>
-      <p class="goods-price">${price}$</p>
+      <h3 class="goods-title">${this.title}</h3>
+      <p class="goods-price">${this.price}$</p>
     </div>
-  `
+    `;
+  }
 }
 
-const renderGoodsList = (list = []) => {
-  let goodsList = list.map(item => renderGoodsItem(item));
-  document.querySelector('.goodList').innerHTML = goodsList.join(' ');
+class GoodsList {
+  list = [];
+
+  fetchGoods() {
+    this.list = goods
+  }
+
+  getCount() {
+    let count = this.list.reduce(((sum, {price}) => sum + price), 0)
+    return count;
+  }
+
+  render() {
+    const goods = this.list.map(item => {
+      const goodItem = new GoodsItem(item);
+      return goodItem.render();
+    });
+  
+    document.querySelector('.goodList').innerHTML = goods.join(' ');
+  }
 }
 
-renderGoodsList(goods);
+const goodsList = new GoodsList();
+goodsList.fetchGoods();
+goodsList.render();
+console.log(goodsList.getCount())
