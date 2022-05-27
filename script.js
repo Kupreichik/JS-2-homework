@@ -7,9 +7,20 @@ const goods = [
   { title: 'Shoes', price: 250 },
 ];
 
+const GET_GOODS_ITEMS = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses/catalogData.json';
+const GET_BASKET_GOODS_ITEMS = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses/getBasket.json';
+
+function checkStatus(response) {  
+  if (response.status >= 200 && response.status < 300) {  
+    return Promise.resolve(response)  
+  } else {  
+    return Promise.reject(new Error(response.statusText))  
+  }  
+}
+
 class GoodsItem {
-  constructor({title = 'Странный товар...', price = 'Нет на складе'} = {}) {
-    this.title = title;
+  constructor({product_name = 'Странный товар...', price = 'Нет на складе'} = {}) {
+    this.title = product_name;
     this.price = price;
   }
 
@@ -27,7 +38,12 @@ class GoodsList {
   list = [];
 
   fetchGoods() {
-    this.list = goods
+    fetch(GET_GOODS_ITEMS)
+      .then(checkStatus)
+      .then(response => response.json())
+      .then(result => {
+        return this.list = JSON.parse(JSON.stringify(result))})
+      .then(this.render)
   }
 
   getCount() {
@@ -35,17 +51,15 @@ class GoodsList {
     return count;
   }
 
-  render() {
-    const goods = this.list.map(item => {
+  render(arr) {
+      const goods = arr.map(item => {
       const goodItem = new GoodsItem(item);
       return goodItem.render();
-    });
-  
+      });
+      
     document.querySelector('.goodList').innerHTML = goods.join(' ');
   }
 }
 
 const goodsList = new GoodsList();
 goodsList.fetchGoods();
-goodsList.render();
-console.log(goodsList.getCount())
