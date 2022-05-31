@@ -10,6 +10,12 @@ const goods = [
 const GET_GOODS_ITEMS = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses/catalogData.json';
 const GET_BASKET_GOODS_ITEMS = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses/getBasket.json';
 
+function requestData(url) {
+  return fetch(url)
+  .then(checkStatus)
+  .then(response => response.json())
+}
+
 function checkStatus(response) {  
   if (response.status >= 200 && response.status < 300) {  
     return Promise.resolve(response)  
@@ -36,14 +42,26 @@ class GoodsItem {
 
 class GoodsList {
   list = [];
+  filtredList = [];
 
   fetchGoods() {
-    fetch(GET_GOODS_ITEMS)
-      .then(checkStatus)
-      .then(response => response.json())
+    requestData(GET_GOODS_ITEMS)
       .then(result => {
-        return this.list = JSON.parse(JSON.stringify(result))})
+        this.list = JSON.parse(JSON.stringify(result));
+        return this.filtredList = JSON.parse(JSON.stringify(result))
+        })
       .then(this.render)
+  }
+
+  filterList(searchValue) {
+    return new Promise((resolve) =>
+      resolve(
+        this.filtredList = this.list.filter(({product_name}) => {
+          return product_name.match(new RegExp(searchValue, 'gui'))
+        })
+      )
+    )
+    .then(this.render)
   }
 
   getCount() {
@@ -61,5 +79,23 @@ class GoodsList {
   }
 }
 
+class BasketList {
+  list = [];
+
+  fetchGoods() {
+    requestData(GET_BASKET_GOODS_ITEMS)
+      .then(result => {
+        return this.list = JSON.parse(JSON.stringify(result))})
+  }
+}
+
 const goodsList = new GoodsList();
 goodsList.fetchGoods();
+
+const basketList = new BasketList();
+basketList.fetchGoods();
+
+document.querySelector('.searchButton').addEventListener('click', () => {
+  const searchValue = document.querySelector('.goodsSearch').value;
+  goodsList.filterList(searchValue)
+})
