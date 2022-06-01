@@ -35,7 +35,7 @@ main {
 
 .goodList {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 30px;
 
 }
@@ -43,4 +43,21 @@ main {
 .goods-item {
     background-color: #c5afd8;
     text-align: center;
+    height: 250px;
+}
+
+.wrapBtns {
+    display: flex;
+}
+
+.searchButton {
+    height: 35px;
+    color: #812db9;
+    font-weight: 600;
+    margin-right: 30px;
+}
+
+.goodsSearch {
+    float: left;
+    height: 29px;
 }
