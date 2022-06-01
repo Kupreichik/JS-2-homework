@@ -45,3 +45,19 @@ main {
     text-align: center;
     height: 250px;
 }
+
+.wrapBtns {
+    display: flex;
+}
+
+.searchButton {
+    height: 35px;
+    color: #812db9;
+    font-weight: 600;
+    margin-right: 30px;
+}
+
+.goodsSearch {
+    float: left;
+    height: 29px;
+}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make burger</title>
+</head>
+<body>
+    <form style="border: 2px solid #ff5722;
+    background-color: bisque;
+    font-size: 18px;
+    width: 500px;
+    text-align: center;
+    line-height: 30px;
+    margin: auto;">
+        <div class="chooseSize">Собери свой любимый бургер:<br>
+        <input type="radio" name="size" value="big">большой
+        <input type="radio" name="size" value="small">маленький
+        </div>
+        <div class="chooseStuffings">теперь выбери начинку:<br>
+        <input type="checkbox" name="chooseBurger" value="cheese">сыр
+        <input type="checkbox" name="chooseBurger" value="salad">салат
+        <input type="checkbox" name="chooseBurger" value="potato">картофель
+        <div>Посыпать приправой<input type="checkbox" name="chooseBurger" value="seasoning"></div>
+        <div>Полить майонезом<input type="checkbox" name="chooseBurger" value="mayonnaise"></div>
+        </div>
+        <div style="background-color: #ff57225e;">
+            <div>стоимость гамбургера
+                <div class="cost">0 руб.</div>
+            </div>
+            <div>калорийность
+                <div class="calories">0 ккал</div>
+            </div>
+        </div>
+        <div>
+            <input type="submit" value="заказать" style="background-color: #ff5722; font-size: 18px;">
+            <input type="reset" value="очистить" style="background-color: #f5c293; font-size: 18px;">
+        </div>
+    </form>
+    <script src="script.js"></script>
+</body>
+</html>
