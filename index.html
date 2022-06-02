@@ -7,22 +7,37 @@
     <title>AliExpress</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://kit.fontawesome.com/f3c9a0c818.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <script src="script.js"></script>
 </head>
 <body>
-    <header>
-        <i class="logo fa-brands fa-cotton-bureau">  Shop</i>
-        <div class="wrapBtns">
-            <div class="search">
-            <input type="text" class="goodsSearch">
-            <button class="searchButton" type="button">Искать</button>
+    <div id="root">
+        <header>
+            <i class="logo fa-brands fa-cotton-bureau"> Shop</i>
+            <div class="wrapBtns">
+                <div class="search">
+                    <input type="text" class="goodsSearch" v-model="searchValue">
+                </div>
+                <button class="cartBtn" type="button" @click = "showCart">Корзина</button>
             </div>
-            <button class="cartBtn" type="button">Корзина</button>
-        </div>
-        
-    </header>
-    <main>
-        <div class="goodList"></div>
-    </main>
-    <script src="script.js"></script>
+        </header>
+        <main>
+            <div class="goodList" v-if="isLoadedData">
+                <div class="goods-item" v-for="item in filterList" v-on-load="isLoadedData = true">
+                    <h3 class="goods-title">{{ item.product_name }}</h3>
+                    <p class="goods-price">{{ item.price }}$</p>
+                </div>
+            </div>
+            <div v-else>Нет данных</div>
+            <div class="basketList" v-if="isVisibleCart"> Корзина
+                <i class="closeBtn fa-solid fa-xmark" @click = "closeCart"></i>
+                <div class="basket-item" v-for="item in filterList">
+                    <h3 class="goods-title"></h3>
+                    <p class="goods-price">$</p>
+                </div>
+                <div>К оплате</div>
+            </div>
+        </main>
+    </div>
 </body>
 </html>
