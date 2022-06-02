@@ -24,7 +24,6 @@ window.onload = () => {
       list: [],
       searchValue: '',
       isVisibleCart: false,
-      isLoadedData: false
     },
 
     methods: {
@@ -33,7 +32,6 @@ window.onload = () => {
           .then(result => {
             return this.list = result
           })
-          .then(this.isLoadedData = true)
       },
 
       showCart() {
@@ -55,6 +53,10 @@ window.onload = () => {
         return this.list.filter(({ product_name }) => {
           return product_name.match(new RegExp(this.searchValue, 'gui'))
         })
+      },
+
+      isLoadedData() {
+        return this.filterList.length !== 0
       }
     },
 
