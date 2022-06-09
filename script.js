@@ -1,12 +1,5 @@
 "use strict"
 
-const goods = [
-  { title: 'Shirt', price: 150 },
-  { title: 'Socks', price: 50 },
-  { title: 'Jacket', price: 350 },
-  { title: 'Shoes', price: 250 },
-];
-
 const GET_GOODS_ITEMS = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses/catalogData.json';
 const GET_BASKET_GOODS_ITEMS = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses/getBasket.json';
 
@@ -24,78 +17,51 @@ function checkStatus(response) {
   }  
 }
 
-class GoodsItem {
-  constructor({product_name = 'Странный товар...', price = 'Нет на складе'} = {}) {
-    this.title = product_name;
-    this.price = price;
-  }
+window.onload = () => {
+  const app = new Vue({
+    el: "#root",
+    data: {
+      list: [],
+      searchValue: '',
+      isVisibleCart: false,
+    },
 
-  render() {
-    return `
-    <div class="goods-item">
-      <h3 class="goods-title">${this.title}</h3>
-      <p class="goods-price">${this.price}$</p>
-    </div>
-    `;
-  }
-}
+    methods: {
+      fetchGoods() {
+        requestData(GET_GOODS_ITEMS)
+          .then(result => {
+            return this.list = result
+          })
+      },
 
-class GoodsList {
-  list = [];
-  filtredList = [];
+      showCart() {
+        return this.isVisibleCart = true
+      },
 
-  fetchGoods() {
-    requestData(GET_GOODS_ITEMS)
-      .then(result => {
-        this.list = JSON.parse(JSON.stringify(result));
-        return this.filtredList = JSON.parse(JSON.stringify(result))
+      closeCart() {
+        return this.isVisibleCart = false
+      }
+    },
+
+    computed: {
+      getCount() {
+        let count = this.list.reduce(((sum, { price }) => sum + price), 0)
+        return count;
+      },
+
+      filterList() {
+        return this.list.filter(({ product_name }) => {
+          return product_name.match(new RegExp(this.searchValue, 'gui'))
         })
-      .then(this.render)
-  }
+      },
 
-  filterList(searchValue) {
-    return new Promise((resolve) =>
-      resolve(
-        this.filtredList = this.list.filter(({product_name}) => {
-          return product_name.match(new RegExp(searchValue, 'gui'))
-        })
-      )
-    )
-    .then(this.render)
-  }
+      isLoadedData() {
+        return this.filterList.length !== 0
+      }
+    },
 
-  getCount() {
-    let count = this.list.reduce(((sum, {price}) => sum + price), 0)
-    return count;
-  }
-
-  render(arr) {
-      const goods = arr.map(item => {
-      const goodItem = new GoodsItem(item);
-      return goodItem.render();
-      });
-      
-    document.querySelector('.goodList').innerHTML = goods.join(' ');
-  }
+    mounted() {
+      this.fetchGoods()
+    }
+  })
 }
-
-class BasketList {
-  list = [];
-
-  fetchGoods() {
-    requestData(GET_BASKET_GOODS_ITEMS)
-      .then(result => {
-        return this.list = JSON.parse(JSON.stringify(result))})
-  }
-}
-
-const goodsList = new GoodsList();
-goodsList.fetchGoods();
-
-const basketList = new BasketList();
-basketList.fetchGoods();
-
-document.querySelector('.searchButton').addEventListener('click', () => {
-  const searchValue = document.querySelector('.goodsSearch').value;
-  goodsList.filterList(searchValue)
-})
