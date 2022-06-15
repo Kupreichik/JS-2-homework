@@ -15,28 +15,19 @@
         <header>
             <i class="logo fa-brands fa-cotton-bureau"> Shop</i>
             <div class="wrapBtns">
-                <div class="search">
-                    <input type="text" class="goodsSearch" v-model="searchValue">
-                </div>
-                <button class="cartBtn" type="button" @click = "showCart">Корзина</button>
+                <search-input v-model="searchValue"></search-input>
+                <custom-button @click = "setVisionCart">Корзина</custom-button>
             </div>
         </header>
         <main>
             <div class="goodList" v-if="isLoadedData">
-                <div class="goods-item" v-for="item in filterList" v-on-load="isLoadedData = true">
-                    <h3 class="goods-title">{{ item.product_name }}</h3>
-                    <p class="goods-price">{{ item.price }}$</p>
-                </div>
+                <goods-item v-bind:item="item" v-for="item in filterList" v-on-load="isLoadedData = true">
+                </goods-item>
             </div>
             <div v-else>Нет данных</div>
-            <div class="basketList" v-if="isVisibleCart"> Корзина
-                <i class="closeBtn fa-solid fa-xmark" @click = "closeCart"></i>
-                <div class="basket-item" v-for="item in filterList">
-                    <h3 class="goods-title"></h3>
-                    <p class="goods-price">$</p>
-                </div>
-                <div>К оплате</div>
-            </div>
+            <error-message v-if="errored" v-bind:error-text="errorText" @close="closeErrorMessage"></error-message>
+            <basket-card v-if="isVisibleCart" @close="setVisionCart"> 
+            </basket-card>
         </main>
     </div>
 </body>
