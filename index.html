@@ -26,7 +26,7 @@
             </div>
             <div v-else>Нет данных</div>
             <error-message v-if="errored" v-bind:error-text="errorText" @close="closeErrorMessage"></error-message>
-            <basket-card v-if="isVisibleCart" @close="setVisionCart"> 
+            <basket-card v-if="isVisibleCart" @close="setVisionCart">
             </basket-card>
         </main>
     </div>
