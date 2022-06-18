@@ -1,7 +1,21 @@
 "use strict"
 
 const GET_GOODS_ITEMS = 'http://localhost:8000/goods.json';
+const GOODS_ITEMS = 'http://localhost:8000/goods';
 const GET_BASKET_GOODS_ITEMS = 'http://localhost:8000/basket';
+
+function serviceWithBody(url = '', method = 'POST', body = {}) {
+  return fetch(
+    url,
+    {
+      method,
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+      },
+      body: JSON.stringify(body)
+    }
+  ).then((res) => res.json())
+}
 
 function init() {
   const customButton = Vue.component('custom-button', {
@@ -18,8 +32,18 @@ function init() {
       <div class="goods-item">
         <h3 class="goods-title">{{ item.product_name }}</h3>
         <p class="goods-price">{{ item.price }}$</p>
+        <custom-button class="addInBasket" @click="addGood">
+          Добавить в корзину
+        </custom-button>
       </div>
-      `
+      `,
+      methods: {
+        addGood() {
+          serviceWithBody(GOODS_ITEMS, 'POST', {
+            id: this.item.id
+          })
+        }
+      }
     });
 
   const basket = Vue.component('basket-card', {
@@ -34,7 +58,11 @@ function init() {
         <i class="closeBtn fa-solid fa-xmark" @click="$emit ('close')"></i>
         <h2>Корзина</h2>
         <div class="basket-items">
-        <basket-item v-bind:item="item" v-for="item in basketGoodsItems"></basket-item>
+        <basket-item
+          v-bind:item="item"
+          v-for="item in basketGoodsItems"
+          @add="addGood">
+        </basket-item>
         </div>
         <div class="basket-amount">К оплате 
           <b>{{ basketTotal }}$<b>
@@ -46,6 +74,14 @@ function init() {
       basketTotal() {
         const totaItemlList = this.basketGoodsItems.map(({quantity, price}) => quantity * price);
         return totaItemlList.reduce(((sum, item) => sum + item), 0)
+      }
+    },
+
+    methods: {
+      addGood(id) {
+        serviceWithBody(GOODS_ITEMS, 'POST', {
+          id
+        }).then((data) => this.basketGoodsItems = data)
       }
     },
 
@@ -67,7 +103,7 @@ function init() {
       <div>
         <button>-</button>
         <span>{{ item.quantity }}</span>
-        <button>+</button>
+        <button @click="$emit('add', item.id)">+</button>
       </div>
       <div class="itemTotal">Итого: {{ basketItemTotal }}$</div>
     </div>

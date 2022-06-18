@@ -46,6 +46,15 @@ main {
     background-color: #c5afd8;
     text-align: center;
     height: 250px;
+    display: grid;
+    grid-template-rows: min-content auto min-content;
+    padding-bottom: 30px;
+}
+
+.addInBasket {
+    margin-right: auto;
+    margin-left: auto;
+    width: 160px;
 }
 
 .wrapBtns {
