@@ -71,6 +71,32 @@ app.post('/goods', (res, req) => {
   })
 });
 
+app.delete('/goods', (res, req) => {
+  readBasket().then((basketList) => {
+    const basketItem = basketList.find(({id: _id}) => _id === res.body.id);
+    if(basketItem.quantity > 1) {
+      basketList = basketList.map((basketItem) => {
+        if(basketItem.id === res.body.id) {
+          return {
+            ...basketItem,
+            quantity: --basketItem.quantity
+          }
+        } else {
+          return basketItem
+        }
+      })
+    } else {
+      basketList = basketList.filter(
+        basketItem => basketItem.id !== res.body.id)
+    };
+
+    return writeFile(BASKET_PATH, JSON.stringify(basketList)).then(() => {
+      return getReformBasket()
+      .then((result) => req.send(result))
+    })
+  })
+});
+
 
 app.get('/basket', (req, res) => {
   getReformBasket()

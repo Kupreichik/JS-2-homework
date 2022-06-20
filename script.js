@@ -61,7 +61,8 @@ function init() {
         <basket-item
           v-bind:item="item"
           v-for="item in basketGoodsItems"
-          @add="addGood">
+          @add="addGood"
+          @delete="deleteGood">
         </basket-item>
         </div>
         <div class="basket-amount">К оплате 
@@ -80,6 +81,12 @@ function init() {
     methods: {
       addGood(id) {
         serviceWithBody(GOODS_ITEMS, 'POST', {
+          id
+        }).then((data) => this.basketGoodsItems = data)
+      },
+
+      deleteGood(id) {
+        serviceWithBody(GOODS_ITEMS, 'DELETE', {
           id
         }).then((data) => this.basketGoodsItems = data)
       }
@@ -101,7 +108,7 @@ function init() {
       <h3 class="goods-title">{{ item.product_name }}</h3>
       <p class="goods-price">{{ item.price }}$</p>
       <div>
-        <button>-</button>
+        <button @click="$emit('delete', item.id)">-</button>
         <span>{{ item.quantity }}</span>
         <button @click="$emit('add', item.id)">+</button>
       </div>
