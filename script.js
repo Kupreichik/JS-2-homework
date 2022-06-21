@@ -1,7 +1,7 @@
 "use strict"
 
-const GET_GOODS_ITEMS = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses/catalogData.json';
-const GET_BASKET_GOODS_ITEMS = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses/getBasket.json';
+const GET_GOODS_ITEMS = 'http://localhost:8000/goods.json';
+const GET_BASKET_GOODS_ITEMS = 'http://localhost:8000/basket';
 
 function init() {
   const customButton = Vue.component('custom-button', {
@@ -34,11 +34,50 @@ function init() {
         <i class="closeBtn fa-solid fa-xmark" @click="$emit ('close')"></i>
         <h2>Корзина</h2>
         <div class="basket-items">
-          <slot>Ваша корзина пуста</slot>
+        <basket-item v-bind:item="item" v-for="item in basketGoodsItems"></basket-item>
         </div>
-        <div class="basket-amount">К оплате</div>
+        <div class="basket-amount">К оплате 
+          <b>{{ basketTotal }}$<b>
+        </div>
       </div>
-    `
+    `,
+
+    computed: {
+      basketTotal() {
+        const totaItemlList = this.basketGoodsItems.map(({quantity, price}) => quantity * price);
+        return totaItemlList.reduce(((sum, item) => sum + item), 0)
+      }
+    },
+
+    mounted() {
+      return fetch(GET_BASKET_GOODS_ITEMS)
+          .then(response => response.json())
+          .then(result => {
+            return this.basketGoodsItems = result
+          })
+    }
+  });
+
+  const basketItem = Vue.component('basket-item', {
+    props: ['item'],
+    template: `
+    <div class="basket-item">
+      <h3 class="goods-title">{{ item.product_name }}</h3>
+      <p class="goods-price">{{ item.price }}$</p>
+      <div>
+        <button>-</button>
+        <span>{{ item.quantity }}</span>
+        <button>+</button>
+      </div>
+      <div class="itemTotal">Итого: {{ basketItemTotal }}$</div>
+    </div>
+    `,
+    computed: {
+      basketItemTotal() {
+        let itemTotal = this.item.price * this.item.quantity;
+        return itemTotal
+      }
+    }
   });
 
   const searchInput = Vue.component('search-input', {
