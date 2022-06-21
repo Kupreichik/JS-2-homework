@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AliExpress</title>
+    <script src="https://kit.fontawesome.com/f3c9a0c818.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+<script defer src="index.js"></script></head>
+<body>
+    <div id="root">
+        <header>
+            <i class="logo fa-brands fa-cotton-bureau"> Shop</i>
+            <div class="wrapBtns">
+                <search-input v-model="searchValue"></search-input>
+                <custom-button @click = "setVisionCart">Корзина</custom-button>
+            </div>
+        </header>
+        <main>
+            <div class="goodList" v-if="isLoadedData">
+                <goods-item v-bind:item="item" v-for="item in filterList" v-on-load="isLoadedData = true">
+                </goods-item>
+            </div>
+            <div v-else>Нет данных</div>
+            <error-message v-if="errored" v-bind:error-text="errorText" @close="closeErrorMessage"></error-message>
+            <basket-card v-if="isVisibleCart" @close="setVisionCart">
+            </basket-card>
+        </main>
+    </div>
+</body>
+</html>
