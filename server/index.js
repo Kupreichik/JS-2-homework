@@ -43,7 +43,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-app.post('/goods', (res, req) => {
+app.post('/basket', (res, req) => {
   readBasket().then((basketList) => {
     const basketItem = basketList.find(({id: _id}) => _id === res.body.id);
     if(!basketItem) {
@@ -71,7 +71,7 @@ app.post('/goods', (res, req) => {
   })
 });
 
-app.delete('/goods', (res, req) => {
+app.delete('/basket', (res, req) => {
   readBasket().then((basketList) => {
     const basketItem = basketList.find(({id: _id}) => _id === res.body.id);
     if(basketItem.quantity > 1) {
